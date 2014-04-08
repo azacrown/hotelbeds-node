@@ -1,4 +1,4 @@
-Conekta node.js wrapper
+Hotelbeds node.js wrapper
 =========
 
 ## Install
