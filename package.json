@@ -4,7 +4,8 @@
     "version": "0.0.1",
     "_id": "hotelbeds@0.0.1",
     "dependencies": {
-        "request": "latest"
+        "request": "latest",
+        "xml2js": "latest"
     },
     "devDependencies": {},
     "repository": {
