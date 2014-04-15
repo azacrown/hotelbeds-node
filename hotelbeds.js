@@ -107,11 +107,22 @@ HotelBeds.prototype.search = function(params, callback) {
                     callback(xmlError, null);
                     return;
                 }
-                callback(error, JSON.stringify(result));
+                parseResult(result, callback);
             });
         }
     });
 };
+
+var parseResult = function(result, callback) {
+    // remove contracts with direct payment
+    for(hotel in result['ServiceHotel']) {
+        var info = result['ServiceHotel'][hotel];
+        if(info['DirectPayment'][0] != 'N') {
+            delete result['ServiceHotel'][hotel];
+        }
+    }    
+    callback(null, JSON.stringify(result));
+}
 
 HotelBeds.prototype.addService = function(params, callback) {
     var builder = new xml2js.Builder({
