@@ -195,7 +195,7 @@ HotelBeds.prototype.addService = function(params, callback) {
                                 'RoomCount': params.roomCount,
                                 'Occupancy': {
                                     'AdultCount': params.adultCount,
-                                    'ChildCount': params.ChildCount || 0,
+                                    'ChildCount': params.childCount || 0,
                                     'GuestList': {
                                         'Customer': params.customers
                                     }
