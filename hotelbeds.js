@@ -98,7 +98,7 @@ HotelBeds.prototype.search = function(params, callback) {
     var me = this;
     request.post(options, function(error, response, body) {
         if(error) {
-            callback(xmlError, null);
+            callback(error, null);
         } else {
             xml2js.parseString(body, function (err, result) {
                 var result = me.parseXmlResp(body, 'getHotelValuedAvail', 'HotelValuedAvail');
