@@ -3,7 +3,18 @@ var request = require('request'),
 
 var HotelBeds = function() {};
 
-HotelBeds.prototype.API_BASE = 'http://testapi.interface-xml.com/appservices/ws/FrontendService';
+HotelBeds.prototype.API_BASE = function() {
+    var  fs = require('fs');
+    var configFile = fs.existsSync(process.cwd() + '/config.js');
+
+    var  api = 'http://testapi.interface-xml.com/appservices/ws/FrontendService';
+    if(configFile) {
+        config = require(process.cwd() + '/config.js');
+        api = config.hotelbeds.api;
+    }
+    return api;
+
+};
 
 HotelBeds.prototype.search = function(params, callback) {
     var builder = new xml2js.Builder({
@@ -88,7 +99,7 @@ HotelBeds.prototype.search = function(params, callback) {
         }
     });
     var options = {
-        url: this.API_BASE,
+        url: this.API_BASE(),
         body: xml,
         headers: {
             'Content-Type': 'text/xml',
@@ -226,7 +237,7 @@ HotelBeds.prototype.addService = function(params, callback) {
         }
     });
     var options = {
-        url: this.API_BASE,
+        url: this.API_BASE(),
         body: xml,
         headers: { 
             'Content-Type': 'text/xml',
@@ -352,7 +363,7 @@ HotelBeds.prototype.purchaseConfirm = function(params, callback) {
         }
     });
     var options = {
-        url: this.API_BASE,
+        url: this.API_BASE(),
         body: xml,
         headers: {
             'Content-Type': 'text/xml',
