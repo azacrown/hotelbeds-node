@@ -1,8 +1,8 @@
 {
     "name": "hotelbeds",
     "description": "Hotelbeds node.js wrapper.",
-    "version": "0.0.1",
-    "_id": "hotelbeds@0.0.1",
+    "version": "0.0.4",
+    "_id": "hotelbeds@0.0.4",
     "dependencies": {
         "request": "latest",
         "xml2js": "latest"

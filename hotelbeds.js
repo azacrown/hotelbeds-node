@@ -21,7 +21,7 @@ HotelBeds.prototype.search = function(params, callback) {
         rootName: 'soapenv:Envelope',
         xmldec: {}
     });
-    var xml = builder.buildObject({
+    var xmlStruct = {
         '$': {
             'soapenv:encodingStyle': 'http://schemas.xmlsoap.org/soap/encoding/',
             'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
@@ -89,15 +89,37 @@ HotelBeds.prototype.search = function(params, callback) {
                             RoomCount: rooms.length,
                             Occupancy: {
                                 AdultCount: rooms[0].split(',')[0],
-                                ChildCount: rooms[0].split(',')[1] || 0
-                            },
+                                ChildCount: rooms[0].split(',')[1] || 0,
+                                GuestList: function() {
+                                    if(!rooms[0].split(',')[1]) {
+                                        return {};
+                                    }
+                                    var len = parseInt(rooms[0].split(',')[1]),
+                                        loop = 0,
+                                        customers = [];
+                                    len = len * rooms.length;
+                                    while(loop < len){
+                                        customers.push({
+                                            '$':{
+                                                type: 'CH'
+                                            },
+                                            Age: 12
+                                        });
+                                        loop++;
+                                    }
+                                    return {
+                                        Customer: customers
+                                    };
+                                }()
+                            }
                         });
                         return occupancy;
                     })(params.rooms)
                 }
             }
         }
-    });
+    }
+    var xml = builder.buildObject(xmlStruct);
     var options = {
         url: this.API_BASE(),
         body: xml,
