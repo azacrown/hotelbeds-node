@@ -121,8 +121,6 @@ HotelBeds.prototype.search = function(params, callback) {
         }
     }
     var xml = builder.buildObject(xmlStruct);
-    console.log(xml);
-
     var options = {
         url: this.API_BASE(),
         body: xml,
