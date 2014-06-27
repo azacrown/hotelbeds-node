@@ -92,7 +92,7 @@ HotelBeds.prototype.search = function(params, callback) {
                                 ChildCount: rooms[0].split(',')[1] || 0,
                                 GuestList: function() {
                                     if(!rooms[0].split(',')[1]) {
-                                        return {};
+                                        return [];
                                     }
                                     var len = parseInt(rooms[0].split(',')[1]),
                                         loop = 0,
@@ -113,6 +113,7 @@ HotelBeds.prototype.search = function(params, callback) {
                                 }()
                             }
                         });
+                        
                         return occupancy;
                     })(params.rooms)
                 }
@@ -120,6 +121,8 @@ HotelBeds.prototype.search = function(params, callback) {
         }
     }
     var xml = builder.buildObject(xmlStruct);
+    console.log(xml);
+
     var options = {
         url: this.API_BASE(),
         body: xml,
