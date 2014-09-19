@@ -402,6 +402,7 @@ HotelBeds.prototype.purchaseConfirm = function(params, callback) {
             return false;
         }
         result.itineraryId = result.Purchase[0].Reference[0].FileNumber[0];
+        result.incomingOffice = result.Purchase[0].Reference[0].IncomingOffice[0].$.code;
         callback(null, result);
     });
 }
