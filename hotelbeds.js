@@ -135,8 +135,8 @@ HotelBeds.prototype.search = function(params, callback) {
             callback(error, null);
         } else {
             xml2js.parseString(body, function (err, result) {
-                var result = me.parseXmlResp(body, 'getHotelValuedAvail', 'HotelValuedAvail');
-                var xmlError = (result.ErrorList) ? me.parseError(result.ErrorList) : false;
+                var result = parseXmlResp(body, 'getHotelValuedAvail', 'HotelValuedAvail');
+                var xmlError = (result.ErrorList) ? parseError(result.ErrorList) : false;
                 if(xmlError) {
                     callback(xmlError, null);
                     return;
@@ -269,8 +269,8 @@ HotelBeds.prototype.addService = function(params, callback) {
     };
     request.post(options, function(error, response, body) {
         if(error) return callback(error, null);
-        var result = me.parseXmlResp(body, 'serviceAdd');
-            var xmlError = (result.ErrorList) ? me.parseError(result.ErrorList) : false;
+        var result = parseXmlResp(body, 'serviceAdd');
+            var xmlError = (result.ErrorList) ? parseError(result.ErrorList) : false;
             if(xmlError) {
                 callback(xmlError, null);
                 return;
@@ -288,7 +288,7 @@ HotelBeds.prototype.addService = function(params, callback) {
     });
 }
 
-HotelBeds.prototype.parseError = function(ErrorList) {
+var parseError = function(ErrorList) {
     var error = ErrorList[0].Error[0];
     parsed = {
         code: error.Code[0],
@@ -395,8 +395,8 @@ HotelBeds.prototype.purchaseConfirm = function(params, callback) {
     };
     request.post(options, function(error, response, body) {
         if(error) return callback(error,null);
-        var result = me.parseXmlResp(body, 'purchaseConfirm');
-        var xmlError = (result.ErrorList) ? me.parseError(result.ErrorList):false;
+        var result = parseXmlResp(body, 'purchaseConfirm');
+        var xmlError = (result.ErrorList) ? parseError(result.ErrorList):false;
         if(xmlError) {
             callback(xmlError);
             return false;
@@ -406,7 +406,7 @@ HotelBeds.prototype.purchaseConfirm = function(params, callback) {
     });
 }
 
-HotelBeds.prototype.parseXmlResp = function(body, service, section) {
+var parseXmlResp = function(body, service, section) {
     var JSONResult = '';
     xml2js.parseString(body, function(err, result) {
         if(err) return JSONResult = err;
@@ -428,6 +428,72 @@ HotelBeds.prototype.parseXmlResp = function(body, service, section) {
         });
     });
     return JSONResult;
+}
+
+
+HotelBeds.prototype.purchaseCancel = function(params, callback) {
+    var builder = new xml2js.Builder({
+        rootName: 'soapenv:Envelope',
+        xmldec: {}
+    });
+    var me = this;
+    var xmlObject = {
+        '$': {
+            'soapenv:encodingStyle': 'http://schemas.xmlsoap.org/soap/encoding/',
+            'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+        },
+        'soapenv:Body': {
+            'hb:purchaseCancel': {
+                '$': {
+                    'xmlns:hb': 'http://axis.frontend.hydra.hotelbeds.com',
+                    'xsi:type': 'xsd:string'
+                },
+                PurchaseCancelRQ: {
+                    '$': {
+                        xmlns: 'http://www.hotelbeds.com/schemas/2005/06/messages',
+                        'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                        version: '2013/04',
+                        type: 'C'
+                    },
+                    Language: 'ENG',
+                    Credentials: {
+                        User: params.username,
+                        Password: params.password
+                    },
+                    PurchaseReference: {
+                        FileNumber: params.fileNumber,
+                        IncomingOffice: {
+                            '$': {
+                                code: params.incomingOffice
+                            }
+                        },
+                        
+                    }
+                }
+            }
+        }
+    }
+    var xml = builder.buildObject(xmlObject);
+    var options = {
+        url: this.API_BASE(),
+        body: xml,
+        headers: {
+            'Content-Type': 'text/xml',
+            "SOAPAction": "http://testapi.interface-xml.com/appservices/ws/FrontendService"
+        }
+    };
+    request.post(options, function(error, response, body) {
+        if(error) return callback(error,null);
+        var result = parseXmlResp(body, 'purchaseCancel');
+        var xmlError = (result.ErrorList) ? parseError(result.ErrorList):false;
+        if(xmlError) {
+            callback(xmlError);
+            return false;
+        }
+        result.itineraryId = result.Purchase[0].Reference[0].FileNumber[0];
+        callback(null, result);
+    });
 }
 
 module.exports = new HotelBeds();
