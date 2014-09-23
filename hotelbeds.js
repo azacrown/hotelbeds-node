@@ -455,7 +455,7 @@ HotelBeds.prototype.purchaseCancel = function(params, callback) {
                         xmlns: 'http://www.hotelbeds.com/schemas/2005/06/messages',
                         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                         version: '2013/04',
-                        type: 'C'
+                        type: params.type || 'C'
                     },
                     Language: 'ENG',
                     Credentials: {
