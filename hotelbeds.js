@@ -423,7 +423,6 @@ var parseXmlResp = function(body, service, section) {
                 parsed = parsed[service + 'RS'];
             }
             
-            delete parsed.$;
             return JSONResult = parsed;
 
         });
